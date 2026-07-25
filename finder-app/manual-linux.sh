@@ -92,7 +92,7 @@ sudo mknod -m 666 ${OUTDIR}/rootfs/dev/console c 5 1
 
 # Clean and build the writer utility
 make clean
-make CROSS_COMPILE=${CROSS_COMPILE} writer
+make CROSS_COMPILE=${CROSS_COMPILE} build
 # Copy the finder related scripts and executables to the /home directory on the target rootfs
 cp finder.sh finder-test.sh writer ${OUTDIR}/rootfs/home
 cp -r conf ${OUTDIR}/rootfs/home
