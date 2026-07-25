@@ -38,7 +38,6 @@ if [ ! -e ${OUTDIR}/linux-stable/arch/${ARCH}/boot/Image ]; then
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} mrproper
     make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} defconfig
     make -j4 ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} all
-    make -j4 ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} modules
     make -j4 ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} dtbs
 fi
 
@@ -97,6 +96,7 @@ make clean
 make CROSS_COMPILE=${CROSS_COMPILE} build
 # Copy the finder related scripts and executables to the /home directory on the target rootfs
 cp finder.sh finder-test.sh writer ${OUTDIR}/rootfs/home
+cp autorun-qemu.sh ${OUTDIR}/rootfs/home
 cp -L conf/username.txt ${OUTDIR}/rootfs/home
 cp -L conf/assignment.txt ${OUTDIR}/rootfs/home
 # Chown the root directory
