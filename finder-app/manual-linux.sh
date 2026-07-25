@@ -62,7 +62,7 @@ mkdir -p usr/bin usr/lib usr/sbin var/log
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/busybox" ]
 then
-    git clone git@github.com:mirror/busybox.git
+    git clone git://busybox.net/busybox.git
     cd busybox
     git checkout ${BUSYBOX_VERSION}
     # Configure busybox
