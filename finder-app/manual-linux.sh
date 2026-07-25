@@ -12,6 +12,7 @@ BUSYBOX_VERSION=1_33_1
 FINDER_APP_DIR=$(realpath $(dirname $0))
 ARCH=arm64
 CROSS_COMPILE=aarch64-none-linux-gnu-
+SYSROOT=$(${CROSS_COMPILE}gcc -print-sysroot)
 
 if [ $# -lt 1 ]
 then
@@ -57,7 +58,7 @@ fi
 mkdir -p ${OUTDIR}/rootfs
 cd ${OUTDIR}/rootfs
 mkdir -p bin dev etc home lib lib64 proc sbin sys tmp usr var
-mkdir -p usr/bin usr/lib usr/sbin var/log
+mkdir -p usr/bin usr/lib usr/sbin var/log home/conf
 
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/busybox" ]
@@ -81,10 +82,10 @@ ${CROSS_COMPILE}readelf -a ${OUTDIR}/rootfs/bin/busybox | grep "program interpre
 ${CROSS_COMPILE}readelf -a ${OUTDIR}/rootfs/bin/busybox | grep "Shared library"
 
 # Add library dependencies to rootfs
-cp /tmp/libs/ld-linux-aarch64.so.1 ${OUTDIR}/rootfs/lib
-cp /tmp/libs/libm.so.6 ${OUTDIR}/rootfs/lib64
-cp /tmp/libs/libresolv.so.2 ${OUTDIR}/rootfs/lib64
-cp /tmp/libs/libc.so.6 ${OUTDIR}/rootfs/lib64
+cp ${SYSROOT}/ld-linux-aarch64.so.1 ${OUTDIR}/rootfs/lib
+cp ${SYSROOT}/libm.so.6 ${OUTDIR}/rootfs/lib64
+cp ${SYSROOT}/libresolv.so.2 ${OUTDIR}/rootfs/lib64
+cp ${SYSROOT}/libc.so.6 ${OUTDIR}/rootfs/lib64
 
 # Make device nodes
 sudo mknod -m 666 ${OUTDIR}/rootfs/dev/null c 1 3
@@ -97,8 +98,8 @@ make CROSS_COMPILE=${CROSS_COMPILE} build
 # Copy the finder related scripts and executables to the /home directory on the target rootfs
 cp finder.sh finder-test.sh writer ${OUTDIR}/rootfs/home
 cp autorun-qemu.sh ${OUTDIR}/rootfs/home
-cp -L conf/username.txt ${OUTDIR}/rootfs/home
-cp -L conf/assignment.txt ${OUTDIR}/rootfs/home
+cp -L conf/username.txt ${OUTDIR}/rootfs/home/conf/
+cp -L conf/assignment.txt ${OUTDIR}/rootfs/home/conf/
 # Chown the root directory
 sudo chown -R root:root ${OUTDIR}/rootfs
 # Create initramfs.cpio.gz
